@@ -5,4 +5,5 @@ module com.bio.biosmart {
     requires reactfx;
 
     exports com.bio.biosmart;
+    exports com.bio.biosmart.UI to javafx.graphics;
 }
