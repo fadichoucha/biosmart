@@ -41,6 +41,23 @@ public class SeqEditShow extends Application {
         seqStage.setScene(seqEditShowScene);
         seqStage.show();
     }
+
+    // Events Handlers ----------------------------------
+    EventHandler<MouseEvent> mousEvent = event -> {
+        System.out.println(event.getEventType());
+    };
+
+    EventHandler<MouseEvent> changeNtColor = new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent event) {
+            StackPane wrappedElement = (StackPane) event.getSource();
+            wrappedElement.setStyle(
+                    "-fx-border-width: 5px; -fx-border-color: rgb(0,0,0);"
+            );
+            //wrappedElement.setBorder();
+        }
+    };
+
     /**
      * Layout defines UI element for sequence edit and sequence show.
      */
@@ -100,9 +117,14 @@ public class SeqEditShow extends Application {
                     20,
                     getNucleotideColor(element)
             );
+
+            // Events
+            //wrappedElement.addEventFilter(MouseEvent.MOUSE_ENTERED, mousEvent);
+            wrappedElement.addEventHandler(MouseEvent.MOUSE_CLICKED, changeNtColor);
+
+            // Add to the sequence near layout
             seqLayout.getChildren().add(
-                    i,
-                    wrappedElement
+                    i, wrappedElement
             );
             seqLayout.setAlignment(Pos.CENTER);
         }
