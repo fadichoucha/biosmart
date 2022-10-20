@@ -1,5 +1,6 @@
 package com.bio.biosmart.UI;
 
+import com.bio.biosmart.utils.OpenFile;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -19,6 +20,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class SeqEditShow extends Application {
     public static void main(String[] args) {
@@ -83,7 +87,9 @@ public class SeqEditShow extends Application {
         test.add('A'); test.add('T'); test.add('A'); test.add('T'); test.add('C'); test.add('A');
         test.add('A'); test.add('C'); test.add('T'); test.add('A'); test.add('C'); test.add('A');
         test.add('A'); test.add('G'); test.add('A'); test.add('T');
-        HBox seqBandLayout = getSeqLayout(test);
+        HBox seqBandLayout = getSeqLayout(
+                OpenFile.getEntireContent("data/rawSeq.txt")
+        );
         // sequence tools
 
         // Add elements to the central layout
@@ -96,17 +102,25 @@ public class SeqEditShow extends Application {
         return layout;
     }
 
-    private HBox getSeqLayout(ArrayList<Character> sequence){
-         HBox seqLayout = new HBox(0);
-         seqLayout.setBackground(
-                 new Background(
-                         new BackgroundFill(
-                            Color.HONEYDEW,
-                            CornerRadii.EMPTY,
-                            Insets.EMPTY
-                         )
-                 )
-         );
+    private HBox getSeqLayout(String seq){
+        //convert string to ArrayList
+        ArrayList<Character> sequence = new ArrayList<>();
+        char[] seqChar= seq.toCharArray();
+        for (char x:
+             seqChar) {
+            sequence.add(Character.toUpperCase(x));
+        }
+
+        HBox seqLayout = new HBox(0);
+        seqLayout.setBackground(
+             new Background(
+                     new BackgroundFill(
+                        Color.HONEYDEW,
+                        CornerRadii.EMPTY,
+                        Insets.EMPTY
+                     )
+             )
+        );
          // Fill the layout with sequence elements
         for (int i = 0; i < sequence.size(); i++) {
             // wrap N
@@ -150,7 +164,7 @@ public class SeqEditShow extends Application {
             case 'T' -> Color.rgb(255, 255, 0, 0.9);
             case 'G' -> Color.rgb(0, 188, 0, 0.8);
             case 'C' -> Color.rgb(123, 85, 255, 0.8);
-            default -> Color.gray(66);
+            default -> Color.gray(0.66);
         };
     }
 

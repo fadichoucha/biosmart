@@ -1,24 +1,35 @@
 package com.bio.biosmart.utils;
 
 import java.io.*;
+import java.lang.reflect.Array;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 public class OpenFile {
+
+
     /**
-     * Open text file and return its content. The file should contain only
-     * raw sequence.
+     * * Open text file and return its content. The file should
+     * contain only raw sequence. Only for small files.
+     *
+     * @param filePath
+     * String name of file. Full or short file name.
+     * @return
      * Return data as `Stream` String type.
      */
-    public static Stream<String> getEntireContent(String filePath){
-        Stream<String> content = null;
+    public static String getEntireContent(String filePath){
+        StringBuffer content = new StringBuffer();
         try{
             // Load the file content
             File seqFile = new File(filePath);
             try {
                 BufferedReader br = new BufferedReader(new FileReader(seqFile));
                 // Read the file
-                content = br.lines();
-                content.forEach(System.out::println);
+                br.lines().forEach(content::append);
+                System.out.println(content);
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -30,6 +41,6 @@ public class OpenFile {
             System.out.println("ERROR: File is not found: " + nul.getMessage());
         }
 
-        return content;
+        return content.toString();
     }
 }
