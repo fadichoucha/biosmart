@@ -12,6 +12,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /** The main window in the software provide simple interface and
@@ -57,8 +58,8 @@ public class Main extends Application {
         */
 
         SeqEditShow seqEditShow = new SeqEditShow();
-        BorderPane seqLayout = seqEditShow.getSeqEditLayout();
-
+        VBox seqLayout = seqEditShow.getSeqEditLayout();
+        //seqLayout.setStyle("-fx-background-color: green;"); //For test
 
         // Status bar =====================================================
         HBox statusBar = new HBox(10);
@@ -70,9 +71,11 @@ public class Main extends Application {
 
         // Locate elements on the root  ===================================
         root.setTop(mainMenu);
-        root.setBottom(statusBar);
         root.setCenter(seqLayout);
+        root.setBottom(statusBar);
 
+        // Root policies
+        root.setPrefSize(876, 550);
         // Application =====================================================
         primaryStage.setScene(mainScene);
         primaryStage.setTitle("BioSmart");

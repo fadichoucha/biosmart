@@ -82,11 +82,9 @@ public class SeqBandUI {
         // Central layout
         ScrollPane layout = new ScrollPane();
         layout.setBackground(new Background(new BackgroundFill(Color.ORCHID,CornerRadii.EMPTY, Insets.EMPTY)));
-        layout.setMinHeight(200);
+        layout.setMinHeight(150);
         layout.setMinWidth(500);
         layout.setPadding(new Insets(10));
-        //layout.setHgap(10);
-        //layout.setVgap(10);
 
 
         // get file content as String
