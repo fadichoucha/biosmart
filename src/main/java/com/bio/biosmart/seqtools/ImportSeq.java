@@ -1,4 +1,4 @@
-package com.bio.biosmart.utils;
+package com.bio.biosmart.seqtools;
 
 import java.io.*;
 import java.lang.reflect.Array;
