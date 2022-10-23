@@ -1,6 +1,8 @@
 package com.bio.biosmart.UI;
 
 import com.bio.biosmart.utils.OpenFile;
+import com.bio.biosmart.utils.SearchString;
+import com.bio.biosmart.utils.ShowSelectionRange;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -12,6 +14,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -24,13 +28,30 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
+
+
+
+
+
 public class SeqEditShow extends Application {
+    double clickedStartX;
+    double clickedStartY;
+    double clickedEndX;
+    double clickedEndY;
+    BorderPane mainLayout; // main layout for the sequence edit window
+    HBox seqInnerLayout;
+
+    StackPane seqBandPane = new StackPane();
+
+    HBox selectedSeqBox;
+
+
     public static void main(String[] args) {
         launch();
     }
     @Override
     public void start(Stage seqStage) throws Exception {
-        BorderPane mainLayout = new BorderPane();
+        mainLayout = new BorderPane();
         // seqLayout is the part that shows the sequence
         //GridPane seqLayout = getSeqEditShowLayout();
         ScrollPane seqLayout = getSeqEditShowLayout();
@@ -46,10 +67,34 @@ public class SeqEditShow extends Application {
         seqStage.show();
     }
 
-    // Events Handlers ----------------------------------
-    EventHandler<MouseEvent> mousEvent = event -> {
-        System.out.println(event.getEventType());
+    // Events Handlers =================================================
+
+    /**
+     * Action when click a sequence element in the sequence layout
+     */
+    EventHandler<MouseEvent> elementClickedStart = new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent event) {
+            StackPane target = (StackPane) event.getSource();
+            double xx = target.getLayoutX();
+            double yy = target.getLayoutY();
+
+            if (clickedStartX == 0){
+                clickedStartX = xx;
+                clickedStartY = yy;
+                System.out.println("--> X::: " + xx);
+                System.out.println("--> Y::: " + yy);
+            } else {
+                clickedEndX = xx;
+                clickedEndY = yy;
+                System.out.println("<-- X::: " + xx);
+                System.out.println("<-- Y::: " + yy);
+                showSelectedSeqRange();
+            }
+        }
     };
+
+
 
     EventHandler<MouseEvent> changeNtColor = new EventHandler<MouseEvent>() {
         @Override
@@ -62,13 +107,23 @@ public class SeqEditShow extends Application {
         }
     };
 
+    EventHandler<MouseEvent> rangeSelection = new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent event) {
+            System.out.println("------");
+        }
+    };
+
+    // END ===========================================================
+
+
     /**
      * Layout defines UI element for sequence edit and sequence show.
      */
     private ScrollPane getSeqEditShowLayout(){
         // Central layout
         ScrollPane layout = new ScrollPane();
-        layout.setBackground(new Background(new BackgroundFill(Color.GREEN,CornerRadii.EMPTY,Insets.EMPTY)));
+        layout.setBackground(new Background(new BackgroundFill(Color.ORCHID,CornerRadii.EMPTY,Insets.EMPTY)));
         layout.setMinHeight(200);
         layout.setMinWidth(500);
         layout.setPadding(new Insets(10));
@@ -87,13 +142,26 @@ public class SeqEditShow extends Application {
         test.add('A'); test.add('T'); test.add('A'); test.add('T'); test.add('C'); test.add('A');
         test.add('A'); test.add('C'); test.add('T'); test.add('A'); test.add('C'); test.add('A');
         test.add('A'); test.add('G'); test.add('A'); test.add('T');
+
+        // get file content as String
+        String fileContentStr = OpenFile.getEntireContent("data/rawSeq.txt");
         HBox seqBandLayout = getSeqLayout(
                 OpenFile.getEntireContent("data/rawSeq.txt")
         );
-        // sequence tools
+        // Put the sequence inner layout in a Stack pane
+        seqBandPane.setBackground(new Background(new BackgroundFill(Color.ORANGERED,CornerRadii.EMPTY,Insets.EMPTY)));
+        seqBandPane.getChildren().add(0,seqBandLayout);
+
+        // TESTS
+        SearchString searcher = new SearchString(fileContentStr, "cagtcgtgt");
+        ArrayList<Integer[]> matchedIndex = searcher.getMatchedIndex();
+        System.out.println("matchedIndex:: ");
+        for (Integer[] index: matchedIndex) {
+            System.out.println(index[0] + " to "+  index[1]);
+        }
 
         // Add elements to the central layout
-        layout.setContent(seqBandLayout);
+        layout.setContent(seqBandPane);
         layout.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         //GridPane.setHgrow(seqBandLayout, Priority.ALWAYS);
         //GridPane.setHalignment(seqBandLayout, HPos.CENTER);
@@ -103,6 +171,7 @@ public class SeqEditShow extends Application {
     }
 
     private HBox getSeqLayout(String seq){
+        seqInnerLayout = new HBox(0);
         //convert string to ArrayList
         ArrayList<Character> sequence = new ArrayList<>();
         char[] seqChar= seq.toCharArray();
@@ -110,12 +179,11 @@ public class SeqEditShow extends Application {
              seqChar) {
             sequence.add(Character.toUpperCase(x));
         }
-
-        HBox seqLayout = new HBox(0);
-        seqLayout.setBackground(
+        // create the sequence inner-layout
+        seqInnerLayout.setBackground(
              new Background(
                      new BackgroundFill(
-                        Color.HONEYDEW,
+                        Color.LIGHTBLUE,
                         CornerRadii.EMPTY,
                         Insets.EMPTY
                      )
@@ -125,6 +193,7 @@ public class SeqEditShow extends Application {
         for (int i = 0; i < sequence.size(); i++) {
             // wrap N
             Character element = sequence.get(i);
+            // Each character is contained in individual 'Box'
             StackPane wrappedElement = wrapElement(
                     String.valueOf(element),
                     15,
@@ -132,18 +201,19 @@ public class SeqEditShow extends Application {
                     getNucleotideColor(element)
             );
 
-            // Events
+            // Events -------------------------
             //wrappedElement.addEventFilter(MouseEvent.MOUSE_ENTERED, mousEvent);
-            wrappedElement.addEventHandler(MouseEvent.MOUSE_CLICKED, changeNtColor);
+            wrappedElement.addEventHandler(MouseEvent.MOUSE_CLICKED, elementClickedStart);
 
             // Add to the sequence near layout
-            seqLayout.getChildren().add(
-                    i, wrappedElement
+            seqInnerLayout.getChildren().add(
+                    i, // Index of the element in the sequence inner-layout
+                    wrappedElement
             );
-            seqLayout.setAlignment(Pos.CENTER);
+            seqInnerLayout.setAlignment(Pos.CENTER);
         }
 
-         return seqLayout;
+         return seqInnerLayout;
     }
 
     private StackPane wrapElement(String element, double width, double height, Paint color){
@@ -182,7 +252,23 @@ public class SeqEditShow extends Application {
         return statusBarLayout;
     }
 
+    private void showSelectedSeqRange(){
+        selectedSeqBox = new ShowSelectionRange(
+                clickedStartX, clickedStartX,
+                clickedStartY, clickedStartY + 50.0,
+                clickedEndX+ 15.0, clickedEndX + 15.0,
+                clickedEndY, clickedEndY + 50.0,
+                15.0, clickedEndX - clickedStartX
+        ).getSelectTab();
+        selectedSeqBox.setTranslateX(clickedStartX);
+        seqBandPane.getChildren().add(1, selectedSeqBox);
 
+        // Set zero values for X and Y
+        clickedStartX = 0;
+        clickedStartY = 0;
+        clickedEndX = 0;
+        clickedEndY = 0;
+    }
 
     private Double[] getNodeCoordinates(Node node){
         double nodeX = node.getLayoutX();
