@@ -1,5 +1,6 @@
 package com.bio.biosmart;
 
+import com.bio.biosmart.UI.SeqEditShow;
 import com.bio.biosmart.UI.SeqTextUI;
 
 import javafx.application.Application;
@@ -54,9 +55,10 @@ public class Main extends Application {
         * a workspace. A workspace may be empty by using an empty Label for
         * example.
         */
-        SeqTextUI importSeqUI = new SeqTextUI();
-        HBox seqLayout = importSeqUI.getSeqLayout();
-        seqLayout.setPadding(new Insets(10));
+
+        SeqEditShow seqEditShow = new SeqEditShow();
+        BorderPane seqLayout = seqEditShow.getSeqEditLayout();
+
 
         // Status bar =====================================================
         HBox statusBar = new HBox(10);
