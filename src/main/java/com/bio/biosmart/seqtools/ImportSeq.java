@@ -1,14 +1,8 @@
 package com.bio.biosmart.seqtools;
 
 import java.io.*;
-import java.lang.reflect.Array;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.stream.Collector;
-import java.util.stream.Stream;
 
-public class OpenFile {
+public class ImportSeq {
 
 
     /**

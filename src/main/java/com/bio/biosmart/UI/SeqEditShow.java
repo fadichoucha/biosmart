@@ -1,21 +1,16 @@
 package com.bio.biosmart.UI;
 
-import com.bio.biosmart.utils.OpenFile;
+import com.bio.biosmart.seqtools.ImportSeq;
 import com.bio.biosmart.utils.SearchString;
 import com.bio.biosmart.utils.ShowSelectionRange;
 import javafx.application.Application;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -24,13 +19,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.stream.Collectors;
-
-
-
-
 
 
 public class SeqEditShow extends Application {
@@ -144,9 +132,9 @@ public class SeqEditShow extends Application {
         test.add('A'); test.add('G'); test.add('A'); test.add('T');
 
         // get file content as String
-        String fileContentStr = OpenFile.getEntireContent("data/rawSeq.txt");
+        String fileContentStr = ImportSeq.getEntireContent("data/rawSeq.txt");
         HBox seqBandLayout = getSeqLayout(
-                OpenFile.getEntireContent("data/rawSeq.txt")
+                ImportSeq.getEntireContent("data/rawSeq.txt")
         );
         // Put the sequence inner layout in a Stack pane
         seqBandPane.setBackground(new Background(new BackgroundFill(Color.ORANGERED,CornerRadii.EMPTY,Insets.EMPTY)));
@@ -258,7 +246,7 @@ public class SeqEditShow extends Application {
                 clickedStartY, clickedStartY + 50.0,
                 clickedEndX+ 15.0, clickedEndX + 15.0,
                 clickedEndY, clickedEndY + 50.0,
-                15.0, clickedEndX - clickedStartX
+                15.0, clickedEndX - clickedStartX + 15
         ).getSelectTab();
         selectedSeqBox.setTranslateX(clickedStartX);
         seqBandPane.getChildren().add(1, selectedSeqBox);

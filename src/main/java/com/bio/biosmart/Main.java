@@ -1,6 +1,6 @@
 package com.bio.biosmart;
 
-import com.bio.biosmart.seqtools.ImportSeqUI;
+import com.bio.biosmart.UI.SeqTextUI;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -22,11 +22,14 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-         // Root -----------------------------------------
+        /*
+        *  A BorderPane divides the workspace to host other elements.
+        */
+        // Root ===================================================
         BorderPane root = new BorderPane();
         Scene mainScene = new Scene(root);
 
-        // Tool Bar --------------------------------------
+        // Tool Bar =======================================================
         MenuBar mainMenu = new MenuBar();
 
         // create menus
@@ -44,29 +47,31 @@ public class Main extends Application {
         // Add submenus to the main menu
         mainMenu.getMenus().addAll(fileMenu, seqMenu, ngsMenu);
 
-        // workspace ------------------------------------
+        // workspace ======================================================
         /*
         * Workspace is a place for work. This place is changeable and defined
         * using layouts. Each layout is provided with its elements which form
         * a workspace. A workspace may be empty by using an empty Label for
-        * example. */
-        ImportSeqUI importSeqUI = new ImportSeqUI();
+        * example.
+        */
+        SeqTextUI importSeqUI = new SeqTextUI();
         HBox seqLayout = importSeqUI.getSeqLayout();
         seqLayout.setPadding(new Insets(10));
 
-        // Status bar ------------------------------------
+        // Status bar =====================================================
         HBox statusBar = new HBox(10);
         statusBar.setPadding(new Insets(5,15,5,15));
         Label statusLabel = new Label("Status: ");
 
         statusBar.getChildren().addAll(statusLabel);
 
-        // Locate elements on the root
+
+        // Locate elements on the root  ===================================
         root.setTop(mainMenu);
         root.setBottom(statusBar);
         root.setCenter(seqLayout);
 
-        // Application
+        // Application =====================================================
         primaryStage.setScene(mainScene);
         primaryStage.setTitle("BioSmart");
         primaryStage.show();

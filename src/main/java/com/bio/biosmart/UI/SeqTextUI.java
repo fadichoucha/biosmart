@@ -1,9 +1,9 @@
-package com.bio.biosmart.seqtools;
+package com.bio.biosmart.UI;
 
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 
-public class ImportSeqUI {
+public class SeqTextUI {
     public HBox getSeqLayout(){
         HBox seqLayout = new HBox(10);
         TextArea textBox = new TextArea();

@@ -9,7 +9,8 @@ public class CheckSeq {
 
     /**
      * Check whether input sequence is a raw sequence. A raw sequence
-     * is defined by common DNA Sequence without any annotation.
+     * is defined by a sequence of common DNA nucleotides without any
+     * annotation or file specific formats.
      */
     static void checkRawDNASeq(String rawSequence){
         char[] rawSequenceArray = rawSequence.toCharArray();
